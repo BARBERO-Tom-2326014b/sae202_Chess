@@ -12,7 +12,7 @@
     <children>
         <!-- Background image with blur effect -->
         <ImageView fitWidth="800" fitHeight="600">
-            <Image url="@/../resources/img/ChessBoard.png"/>
+            <Image url="@ChessBoard.png"/>
             <effect>
                 <GaussianBlur radius="20"/>
             </effect>
