@@ -1,3 +1,33 @@
-label{
+.button {
+    -fx-font-size: 18px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
 
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.button:pressed {
+    -fx-background-color: #3e8e41;
+}
+
+/* Styles for the title */
+.label-title {
+    -fx-font-size: 64px;
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, white, lightgrey);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.5, 0.0, 0.0);
+}
+
+/* Styles for the title border */
+.title-border {
+    -fx-padding: 10;
+    -fx-border-color: white;
+    -fx-border-width: 3;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
 }

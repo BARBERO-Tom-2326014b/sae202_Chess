@@ -8,7 +8,7 @@
 
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.sae202.MainMenuController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.sae202.MainMenuController" stylesheets="@app.css">
     <children>
         <!-- Background image with blur effect -->
         <ImageView fitWidth="800" fitHeight="600">
@@ -20,21 +20,11 @@
 
         <!-- Overlay for the title -->
         <VBox alignment="CENTER" spacing="20" prefWidth="800" prefHeight="600">
-            <Label text="Sae Chess">
-                <font>
-                    <Font size="64"/>
-                </font>
-                <textFill>
-                    <LinearGradient startX="0" startY="0" endX="1" endY="1">
-                        <stops>
-                            <Stop offset="0" color="white"/>
-                            <Stop offset="1" color="lightgrey"/>
-                        </stops>
-                    </LinearGradient>
-                </textFill>
-            </Label>
-            <Button text="Start Game" onAction="#handleStartGame"/>
-            <Button text="Exit" onAction="#handleExit"/>
+            <VBox alignment="CENTER" styleClass="title-border">
+                <Label text="Sae Chess" styleClass="label-title"/>
+            </VBox>
+            <Button text="Start Game" onAction="#handleStartGame" />
+            <Button text="Exit" onAction="#handleExit" />
         </VBox>
     </children>
 </AnchorPane>
