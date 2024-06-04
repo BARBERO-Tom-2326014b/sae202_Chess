@@ -23,7 +23,7 @@
             <VBox alignment="CENTER" styleClass="title-border">
                 <Label text="Sae Chess" styleClass="label-title"/>
             </VBox>
-            <Button text="Start Game" onAction="#handleStartGame" />
+            <Button text="Jouer" onAction="#handleStartGame" />
             <Button text="Exit" onAction="#handleExit" />
         </VBox>
     </children>

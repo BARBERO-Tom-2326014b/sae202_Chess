@@ -27,10 +27,7 @@ public class echiquier extends Application {
         launch(args);
     }
 
-    @Override
-    public void start(Stage primaryStage) {
-        GridPane gridPane = new GridPane();
-
+    public GridPane creationEchequier(GridPane gridPane){
         // Create chess board
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
@@ -49,6 +46,13 @@ public class echiquier extends Application {
                 stackPane.setOnMouseClicked(event -> handleMouseClick(event, finalRow, finalCol, stackPane));
             }
         }
+        return gridPane;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        GridPane gridPane = new GridPane();
+        creationEchequier(gridPane);
 
         // Add pieces
         String[][] pieces = {
