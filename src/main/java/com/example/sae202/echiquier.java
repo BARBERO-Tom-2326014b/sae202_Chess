@@ -126,7 +126,7 @@ public class echiquier extends Application {
         updateChronoDisplay();
 
         vbox.getChildren().addAll(whiteVBox, gridPane, blackVBox);
-        Scene scene = new Scene(vbox, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE + 20);
+        Scene scene = new Scene(vbox, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE + 70);
         primaryStage.setTitle("Chess Board");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -147,12 +147,9 @@ public class echiquier extends Application {
                     selectedPieceRow = row;
                     selectedPieceCol = col;
 
-                    // Change background color of selected piece's cell to yellow
-                    clickedPane.setStyle("-fx-background-color: yellow;");
-
-                    // Preview possible actions
-                    // Implement your logic here to show possible moves for the selected piece
-                    // For example, highlight cells where the piece can move
+                    // Change the color of the rectangle to yellow
+                    Rectangle rectangle = (Rectangle) clickedPane.getChildren().get(0);
+                    rectangle.setFill(Color.YELLOW);
                 }
             }
         } else {
@@ -167,7 +164,11 @@ public class echiquier extends Application {
                 ImageView pieceImageView = (ImageView) selectedPiecePane.getChildren().get(1);
                 selectedPiecePane.getChildren().remove(pieceImageView);
                 clickedPane.getChildren().add(pieceImageView);
-                selectedPiecePane.setStyle(""); // Reset background color
+
+                // Reset the color of the rectangle for the previously selected piece
+                Rectangle prevRectangle = (Rectangle) selectedPiecePane.getChildren().get(0);
+                prevRectangle.setFill((selectedPieceRow + selectedPieceCol) % 2 == 0 ? Color.web("#ebebd0", 1.0) : Color.web("#779455", 1.0));
+
                 selectedPiecePane = null;
                 selectedPieceType = null;
                 whiteTurn = !whiteTurn;
@@ -175,7 +176,9 @@ public class echiquier extends Application {
                 turnText.setText(whiteTurn ? "White's turn" : "Black's turn");
             } else {
                 // Deselect the piece if move is not valid
-                selectedPiecePane.setStyle(""); // Reset background color
+                Rectangle prevRectangle = (Rectangle) selectedPiecePane.getChildren().get(0);
+                prevRectangle.setFill((selectedPieceRow + selectedPieceCol) % 2 == 0 ? Color.web("#ebebd0", 1.0) : Color.web("#779455", 1.0));
+
                 selectedPiecePane = null;
                 selectedPieceType = null;
             }
