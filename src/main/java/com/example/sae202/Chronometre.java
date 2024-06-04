@@ -1,26 +1,27 @@
 package com.example.sae202;
 
-import javax.swing.*;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Chronometre {
-    private long sec, min, totalSec = 0;
-    private JLabel timeLabel;
+    private long sec, min, totalSec;
+    private Label timeLabel;
     private Timer timer;
     private TimerTask timerTask;
+    private echiquier echiquier;
 
-    public Chronometre(long totalSec) {
+    public Chronometre(long totalSec, echiquier echiquier) {
         this.totalSec = totalSec;
-        this.timeLabel = new JLabel(format(totalSec));
+        this.echiquier = echiquier;
+        this.timeLabel = new Label(formatTime(totalSec));
     }
 
     private String format(long value) {
-        if (value < 10) {
-            return "0" + value;
-        }
-        return Long.toString(value);
+        return value < 10 ? "0" + value : Long.toString(value);
     }
 
     private String formatTime(long totalSec) {
@@ -32,8 +33,18 @@ public class Chronometre {
     public void convertTime() {
         min = TimeUnit.SECONDS.toMinutes(totalSec);
         sec = totalSec - (min * 60);
-        timeLabel.setText(format(min) + ":" + format(sec));
         totalSec--;
+        updateLabel();
+    }
+
+    private void updateLabel() {
+        Platform.runLater(() -> {
+            timeLabel.setText(formatTime(totalSec));
+            if (totalSec <= 0) {
+                stop();
+                echiquier.stopGame();
+            }
+        });
     }
 
     public void start() {
@@ -42,15 +53,11 @@ public class Chronometre {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            convertTime();
-                            if (totalSec <= 0) {
-                                timer.cancel();
-                            }
-                        }
-                    });
+                    if (totalSec > 0) {
+                        convertTime();
+                    } else {
+                        stop();
+                    }
                 }
             };
             timer.schedule(timerTask, 0, 1000);  // 1000ms = 1 second
@@ -64,11 +71,7 @@ public class Chronometre {
         }
     }
 
-    public JLabel getTimeLabel() {
+    public Label getTimeLabel() {
         return timeLabel;
-    }
-
-    public long getTotalSec() {
-        return totalSec;
     }
 }

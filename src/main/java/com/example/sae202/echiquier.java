@@ -13,18 +13,60 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.swing.text.Position;
+import java.util.ArrayList;
+import java.util.List;
+
 public class echiquier extends Application {
     private static final int TILE_SIZE = 80;
     private static final int BOARD_SIZE = 8;
     private boolean whiteTurn = true;
+    private boolean gameActive = true;
     private StackPane selectedPiecePane = null;
     private String selectedPieceType = null;
     private int selectedPieceRow;
     private int selectedPieceCol;
     private Text turnText = new Text("White's turn");
+    private Chronometre whiteChronometre = new Chronometre(300, this);
+    private Chronometre blackChronometre = new Chronometre(300, this);
+    private VBox vbox = new VBox();
+    private VBox whiteVBox = new VBox();
+    private VBox blackVBox = new VBox();
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void switchChrono() {
+        if (whiteTurn) {
+            whiteChronometre.start();
+            blackChronometre.stop();
+        } else {
+            blackChronometre.start();
+            whiteChronometre.stop();
+        }
+        updateChronoDisplay();
+    }
+
+    private void updateChronoDisplay() {
+        whiteVBox.getChildren().clear();
+        blackVBox.getChildren().clear();
+
+        if (whiteTurn) {
+            whiteVBox.getChildren().addAll(turnText, whiteChronometre.getTimeLabel());
+            blackVBox.getChildren().addAll(new Text("Black's turn"), blackChronometre.getTimeLabel());
+        } else {
+            whiteVBox.getChildren().addAll(new Text("White's turn"), whiteChronometre.getTimeLabel());
+            blackVBox.getChildren().addAll(turnText, blackChronometre.getTimeLabel());
+        }
+    }
+
+    public void stopGame() {
+        gameActive = false;
+        whiteChronometre.stop();
+        blackChronometre.stop();
+        String winner = whiteTurn ? "Black" : "White";
+        turnText.setText(winner + " wins by timeout!");
     }
 
     public GridPane creationEchequier(GridPane gridPane){
@@ -81,14 +123,18 @@ public class echiquier extends Application {
             }
         }
 
-        VBox vbox = new VBox(turnText, gridPane);
+        updateChronoDisplay();
+
+        vbox.getChildren().addAll(whiteVBox, gridPane, blackVBox);
         Scene scene = new Scene(vbox, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE + 20);
         primaryStage.setTitle("Chess Board");
         primaryStage.setScene(scene);
         primaryStage.show();
+        whiteChronometre.start();
     }
 
     private void handleMouseClick(MouseEvent event, int row, int col, StackPane clickedPane) {
+        if (!gameActive) return;
         if (selectedPiecePane == null) {
             // Select piece
             if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
@@ -100,25 +146,43 @@ public class echiquier extends Application {
                     selectedPieceType = pieceType;
                     selectedPieceRow = row;
                     selectedPieceCol = col;
+
+                    // Change background color of selected piece's cell to yellow
+                    clickedPane.setStyle("-fx-background-color: yellow;");
+
+                    // Preview possible actions
+                    // Implement your logic here to show possible moves for the selected piece
+                    // For example, highlight cells where the piece can move
                 }
             }
         } else {
             // Move piece
             if (isValidMove(row, col)) {
+                // Remove the target piece if it exists (is an enemy piece)
+                if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
+                    clickedPane.getChildren().remove(1);
+                }
+
+                // Move the piece
                 ImageView pieceImageView = (ImageView) selectedPiecePane.getChildren().get(1);
                 selectedPiecePane.getChildren().remove(pieceImageView);
                 clickedPane.getChildren().add(pieceImageView);
+                selectedPiecePane.setStyle(""); // Reset background color
                 selectedPiecePane = null;
                 selectedPieceType = null;
                 whiteTurn = !whiteTurn;
+                switchChrono();
                 turnText.setText(whiteTurn ? "White's turn" : "Black's turn");
             } else {
                 // Deselect the piece if move is not valid
+                selectedPiecePane.setStyle(""); // Reset background color
                 selectedPiecePane = null;
                 selectedPieceType = null;
             }
         }
     }
+
+
 
     private boolean isValidMove(int row, int col) {
         if (selectedPieceType.startsWith("pion")) {
