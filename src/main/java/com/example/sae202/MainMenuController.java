@@ -20,20 +20,16 @@ public class MainMenuController {
     @FXML
     private Button exitButton;
 
-    //@FXML
-//    private void handleStartGame(ActionEvent event) {
-//        // Crée une instance de Echequier
-//        echiquier echequier = new echiquier();
-//
-//        // Utilise la méthode createScene pour obtenir la nouvelle scène
-//
-//        // Obtenir la scène actuelle et définir la nouvelle scène
-//        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-//        Scene scene = echequier.start(stage);
-//        stage.setTitle("Sae Chess");
-//        stage.setScene(scene);
-//        stage.show();
-//    }
+    @FXML
+    private void handleStartGame(ActionEvent event) {
+        echiquier echiquier = new echiquier();
+        try {
+            echiquier.start(new Stage());  // Ouvrir l'interface de l'échiquier dans une nouvelle fenêtre
+            //   primaryStage.close();  // Fermer la fenêtre d'accueil
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleExit(ActionEvent event) {
         // Code pour fermer l'application

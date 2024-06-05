@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.sae202.HelloController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-  </padding>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.sae202.MainMenuController" stylesheets="@app.css">
+    <children>
+        <!-- Background image with blur effect -->
+        <ImageView fitWidth="800" fitHeight="600">
+            <Image url="@ChessBoard.png"/>
+            <effect>
+                <GaussianBlur radius="20"/>
+            </effect>
+        </ImageView>
 
-  <Label fx:id="welcomeText"/>
-  <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+        <!-- Overlay for the title -->
+        <VBox alignment="CENTER" spacing="20" prefWidth="800" prefHeight="600">
+            <VBox alignment="CENTER" styleClass="title-border">
+                <Label text="Sae Chess" styleClass="label-title"/>
+            </VBox>
+            <Button text="Jouer" onAction="#handleStartGame" />
+            <Button text="Exit" onAction="#handleExit" />
+        </VBox>
+    </children>
+</AnchorPane>
