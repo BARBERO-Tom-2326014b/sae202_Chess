@@ -209,13 +209,13 @@ public class echiquier extends Application {
         } else if (pieceType.startsWith("tour")) {
             return tour.getValidMovesForRook(row, col, pieceType,this);
         } else if (pieceType.startsWith("cavalier")) {
-            return getValidMovesForKnight(row, col, pieceType);
+            return cavalier.getValidMovesForKnight(row, col, pieceType,this);
         } else if (pieceType.startsWith("fou")) {
-            return getValidMovesForBishop(row, col, pieceType);
+            return fou.getValidMovesForBishop(row, col, pieceType,this);
         } else if (pieceType.startsWith("reine")) {
-            return getValidMovesForQueen(row, col, pieceType);
+            return renne.getValidMovesForQueen(row, col, pieceType,this);
         } else if (pieceType.startsWith("roi")) {
-            return getValidMovesForKing(row, col, pieceType);
+            return roi.getValidMovesForKing(row, col, pieceType,this);
         }
         return new ArrayList<>();
     }
@@ -245,59 +245,13 @@ public class echiquier extends Application {
 
 
 
-    private List<int[]> getValidMovesForKnight(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-        int[][] moves = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
-        for (int[] move : moves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
-            if (isValidPosition(newRow, newCol) && (isEmpty(newRow, newCol) || isEnemyPiece(newRow, newCol))) {
-                validMoves.add(new int[]{newRow, newCol});
-            }
-        }
-        return validMoves;
-    }
 
-    private List<int[]> getValidMovesForBishop(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-        for (int[] dir : directions) {
-            int newRow = row;
-            int newCol = col;
-            while (true) {
-                newRow += dir[0];
-                newCol += dir[1];
-                if (!isValidPosition(newRow, newCol) || (!isEmpty(newRow, newCol) && !isEnemyPiece(newRow, newCol))) {
-                    break;
-                }
-                validMoves.add(new int[]{newRow, newCol});
-                if (!isEmpty(newRow, newCol)) {
-                    break;
-                }
-            }
-        }
-        return validMoves;
-    }
 
-    private List<int[]> getValidMovesForQueen(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-        validMoves.addAll(tour.getValidMovesForRook(row, col, pieceType,this));
-        validMoves.addAll(getValidMovesForBishop(row, col, pieceType));
-        return validMoves;
-    }
 
-    private List<int[]> getValidMovesForKing(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-        int[][] moves = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
-        for (int[] move : moves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
-            if (isValidPosition(newRow, newCol) && (isEmpty(newRow, newCol) || isEnemyPiece(newRow, newCol))) {
-                validMoves.add(new int[]{newRow, newCol});
-            }
-        }
-        return validMoves;
-    }
+
+
+
+
 
     private List<int[]> getValidMovesForPawn(int row, int col, String pieceType) {
         List<int[]> validMoves = new ArrayList<>();

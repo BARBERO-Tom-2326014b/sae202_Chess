@@ -2,36 +2,25 @@ package com.example.sae202;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class fou {
-    public static List<int[]> getValidMovesForPawn(int row, int col, String pieceType, echiquier board) {
+    public static List<int[]> getValidMovesForBishop(int row, int col, String pieceType, echiquier board) {
         List<int[]> validMoves = new ArrayList<>();
-
-        // Calculer les mouvements valides pour le pion
-        int direction = pieceType.endsWith("B") ? -1 : 1; // La direction dépend de la couleur de la pièce
-        int startRow = pieceType.endsWith("B") ? 6 : 1; // La rangée de départ dépend de la couleur de la pièce
-        int[] singleStep = {direction, 0}; // Un pas en avant
-        int[] doubleStep = {2 * direction, 0}; // Deux pas en avant au premier mouvement
-        int[][] attackMoves = {{direction, 1}, {direction, -1}}; // Mouvements d'attaque
-
-        // Vérifier le mouvement simple en avant
-        if (board.isEmpty(row + direction, col)) {
-            validMoves.add(new int[]{row + direction, col});
-            // Vérifier le mouvement double en avant au premier mouvement
-            if (row == startRow && board.isEmpty(row + 2 * direction, col)) {
-                validMoves.add(new int[]{row + 2 * direction, col});
-            }
-        }
-
-        // Vérifier les mouvements d'attaque diagonaux
-        for (int[] move : attackMoves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
-            if (board.isValidPosition(newRow, newCol) && board.isEnemyPiece(newRow, newCol)) {
+        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+        for (int[] dir : directions) {
+            int newRow = row;
+            int newCol = col;
+            while (true) {
+                newRow += dir[0];
+                newCol += dir[1];
+                if (!board.isValidPosition(newRow, newCol) || (!board.isEmpty(newRow, newCol) && !board.isEnemyPiece(newRow, newCol))) {
+                    break;
+                }
                 validMoves.add(new int[]{newRow, newCol});
+                if (!board.isEmpty(newRow, newCol)) {
+                    break;
+                }
             }
         }
-
         return validMoves;
     }
 }

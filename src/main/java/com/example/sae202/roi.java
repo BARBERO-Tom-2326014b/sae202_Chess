@@ -3,10 +3,10 @@ package com.example.sae202;
 import java.util.ArrayList;
 import java.util.List;
 
-public class cavalier {
-    public static List<int[]> getValidMovesForKnight(int row, int col, String pieceType, echiquier board) {
+public class roi {
+    public static List<int[]> getValidMovesForKing(int row, int col, String pieceType, echiquier board) {
         List<int[]> validMoves = new ArrayList<>();
-        int[][] moves = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
+        int[][] moves = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
         for (int[] move : moves) {
             int newRow = row + move[0];
             int newCol = col + move[1];
