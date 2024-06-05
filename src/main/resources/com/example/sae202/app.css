@@ -3,16 +3,29 @@
 /*}*/
 .button {
     -fx-font-size: 18px;
-    -fx-background-color: #4CAF50;
+    -fx-background-color: #689D71;
+    -fx-text-transform: uppercase;
     -fx-text-fill: white;
     -fx-padding: 10px 20px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-cursor: hand;
+    -fx-border-color: transparent transparent black black;
+    -fx-border-width: 0 0 2 2;
+}
+
+.btnOrdi{
+    -fx-background-color: #787879;
+}
+
+.btnOrdi:hover{
+    -fx-background-color: #A4C4A9;
 }
 
 .button:hover {
-    -fx-background-color: #45a049;
+    -fx-background-color: #86B08D;
+    -fx-border-color: black black transparent transparent;
+    -fx-border-width: 2 2 0 0;
 }
 
 .button:pressed {

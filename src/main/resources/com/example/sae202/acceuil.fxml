@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="800" stylesheets="@app.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="600" prefWidth="800">
+
+         <children>
+            <ImageView fitHeight="600" fitWidth="800">
+               <Image url="@ChessBoard.png" />
+               <effect>
+                  <GaussianBlur radius="20" />
+               </effect>
+            </ImageView>
+            <Label alignment="CENTER" layoutX="165.0" layoutY="36.0" prefHeight="82.0" prefWidth="484.0" styleClass="label-title" text="Sae Chess" />
+            <Button fx:id="jouerContreOrdinateur" layoutX="162.0" layoutY="355.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="484.0" text="Contre l'odinateur" />
+            <Button fx:id="jouerEnLigne" layoutX="162.0" layoutY="202.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="484.0" text="Versus" textFill="WHITE" />
+            <ImageView fitHeight="82.0" fitWidth="85.0" layoutX="214.0" layoutY="365.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@robot.png" />
+            </ImageView>
+            <ImageView fitHeight="82.0" fitWidth="85.0" layoutX="214.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" styleClass="btnOrdi">
+               <Image url="@versus.png" />
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

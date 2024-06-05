@@ -1,12 +1,14 @@
 package com.example.sae202;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -14,37 +16,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class accueil extends Application{
+public class accueil extends Application {
 
     private Stage primaryStage;
-    private boolean joueur1Valide = false;
-    private boolean joueur2Valide = false;
 
-
+    @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("Echecs");
+        primaryStage.setTitle("Chess.com");
 
-        // Interface principale
-        VBox root = new VBox(10);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(10));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/sae202/acceuil.fxml"));
+            AnchorPane root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            primaryStage.setScene(scene);
+            primaryStage.show();
 
-        Label label = new Label("Entrez le nom et prenom des joueurs");
-        label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-        root.getChildren().add(label);
+            Button jouerEnLigne = (Button) scene.lookup("#jouerEnLigne");
+            jouerEnLigne.setOnAction(e -> jouerAvecAmi());
 
-        Button jouerAvecAmi = new Button("Jouer avec un ami");
-        jouerAvecAmi.setOnAction(e -> jouerAvecAmi());
-        root.getChildren().add(jouerAvecAmi);
-
-        Button jouerContreOrdinateur = new Button("Jouer contre l'ordinateur");
-        jouerContreOrdinateur.setOnAction(e -> jouerContreOrdinateur());
-        root.getChildren().add(jouerContreOrdinateur);
-
-        Scene scene = new Scene(root, 500, 400);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            Button jouerContreOrdinateur = (Button) scene.lookup("#jouerContreOrdinateur");
+            jouerContreOrdinateur.setOnAction(e -> jouerContreOrdinateur());
+        } catch (IOException e) {
+            System.err.println("Erreur au chargement: " + e);
+        }
     }
 
     private void jouerAvecAmi() {
@@ -53,7 +48,7 @@ public class accueil extends Application{
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10));
 
-        Label label = new Label("Entrez les noms et prenoms des joueurs");
+        Label label = new Label("Entrez les noms et prénoms des joueurs");
         root.getChildren().add(label);
 
         TextField joueur1Nom = new TextField();
@@ -66,54 +61,16 @@ public class accueil extends Application{
 
         Button validerJoueur1 = new Button("Valider");
         validerJoueur1.setOnAction(e -> {
-            if (!joueur1Valide) {
-                String nom = joueur1Nom.getText();
-                String prenom = joueur1Prenom.getText();
-                enregistrerJoueur(nom, prenom, 0, 0);
-                joueur1Valide = true;
-                joueur1Nom.setDisable(true);
-                joueur1Prenom.setDisable(true);
-                validerJoueur1.setDisable(true);
-                joueur2(root);
-            }
+            // Enregistrer le joueur 1
+            String nom = joueur1Nom.getText();
+            String prenom = joueur1Prenom.getText();
+            enregistrerJoueur(nom, prenom, 0, 0);
+            // Démarrer la partie d'échecs ici
         });
         root.getChildren().add(validerJoueur1);
 
-        Scene scene = new Scene(root, 500, 400);
+        Scene scene = new Scene(root, 780, 650);
         primaryStage.setScene(scene);
-
-        // Déplace le focus vers le bouton pour laisser le texte indicatif visible
-        validerJoueur1.requestFocus();
-    }
-
-    private void joueur2(VBox root) {
-        if (!joueur2Valide) {
-            TextField joueur2Nom = new TextField();
-            joueur2Nom.setPromptText("Nom du joueur 2");
-            root.getChildren().add(joueur2Nom);
-
-            TextField joueur2Prenom = new TextField();
-            joueur2Prenom.setPromptText("Prénom du joueur 2");
-            root.getChildren().add(joueur2Prenom);
-
-            Button validerJoueur2 = new Button("Valider");
-            validerJoueur2.setOnAction(e -> {
-                if (!joueur2Valide) {
-                    String nom = joueur2Nom.getText();
-                    String prenom = joueur2Prenom.getText();
-                    enregistrerJoueur(nom, prenom, 0, 0);
-                    joueur2Valide = true;
-                    joueur2Nom.setDisable(true);
-                    joueur2Prenom.setDisable(true);
-                    validerJoueur2.setDisable(true);
-                    // Démarrer la partie d'échecs ici
-                }
-            });
-            root.getChildren().add(validerJoueur2);
-
-            // Déplace le focus vers le bouton pour laisser le texte indicatif visible
-            validerJoueur2.requestFocus();
-        }
     }
 
     private void jouerContreOrdinateur() {
@@ -122,7 +79,7 @@ public class accueil extends Application{
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10));
 
-        Label label = new Label("Entrez votre nom");
+        Label label = new Label("Entrez votre nom et prénom");
         root.getChildren().add(label);
 
         TextField joueurNom = new TextField();
@@ -135,6 +92,7 @@ public class accueil extends Application{
 
         Button valider = new Button("Valider");
         valider.setOnAction(e -> {
+            // Enregistrer le joueur
             String nom = joueurNom.getText();
             String prenom = joueurPrenom.getText();
             enregistrerJoueur(nom, prenom, 0, 0);
@@ -142,11 +100,8 @@ public class accueil extends Application{
         });
         root.getChildren().add(valider);
 
-        Scene scene = new Scene(root, 500, 400);
+        Scene scene = new Scene(root, 780, 650);
         primaryStage.setScene(scene);
-
-        // Déplace le focus vers le bouton pour laisser le texte indicatif visible
-        valider.requestFocus();
     }
 
     private void enregistrerJoueur(String nom, String prenom, int partiesJouees, int partiesGagnees) {
@@ -156,6 +111,9 @@ public class accueil extends Application{
             e.printStackTrace();
         }
     }
-}
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
 
