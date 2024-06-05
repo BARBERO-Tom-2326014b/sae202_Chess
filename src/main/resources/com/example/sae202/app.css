@@ -24,8 +24,6 @@
 
 .button:hover {
     -fx-background-color: #86B08D;
-    -fx-border-color: black black transparent transparent;
-    -fx-border-width: 2 2 0 0;
 }
 
 .button:pressed {
@@ -34,11 +32,15 @@
 
 /* Styles for the title */
 .label-title {
-    -fx-font-size: 64px;
-    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, white, lightgrey);
-    -fx-effect:
-            dropshadow(gaussian, black, 2, 0.95, -1, 1);
+
+    -fx-font-family: "Arial";
+    -fx-font-size: 62px;
+    -fx-text-fill: white; /* Couleur bleue */
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 2,2,2,2 );
 }
+
 
 /* Styles for the title border */
 .title-border {
