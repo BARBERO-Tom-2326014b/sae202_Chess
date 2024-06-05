@@ -14,12 +14,13 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class echiquier extends Application {
-    private static final int tailleCase = 80;
-    private static final int taillePlateau = 8;
+    static final int tailleCase = 80;
+    static final int taillePlateau = 8;
     private Pieces[][] pieces;
     private boolean tourBlanc = true;
     private boolean enJeux = true;
@@ -34,7 +35,7 @@ public class echiquier extends Application {
     private VBox vbox = new VBox();
     private VBox whiteVBox = new VBox();
     private VBox blackVBox = new VBox();
-    private GridPane gridPane = new GridPane();
+    static GridPane gridPane = new GridPane();
 
     public static void main(String[] args) {
         launch(args);
@@ -93,51 +94,6 @@ public class echiquier extends Application {
             }
         }
         return gridPane;
-    }
-
-    private void initializePieces() {
-        String[][] pieces = {
-                {"tourN", "cavalierN", "fouN", "reineN", "roiN", "fouN", "cavalierN", "tourN"},
-                {"pionN", "pionN", "pionN", "pionN", "pionN", "pionN", "pionN", "pionN"},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {"pionB", "pionB", "pionB", "pionB", "pionB", "pionB", "pionB", "pionB"},
-                {"tourB", "cavalierB", "fouB", "reineB", "roiB", "fouB", "cavalierB", "tourB"}
-        };
-
-        for (int row = 0; row < taillePlateau; row++) {
-            for (int col = 0; col < taillePlateau; col++) {
-                String piece = pieces[row][col];
-                if (piece != null) {
-                    Image image = new Image(getClass().getResourceAsStream("/img/" + piece + ".png"));
-                    ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(tailleCase);
-                    imageView.setFitHeight(tailleCase);
-                    imageView.setUserData(piece); // Set piece type as user data
-                    StackPane stackPane = (StackPane) gridPane.getChildren().get(row * taillePlateau + col);
-                    stackPane.getChildren().add(imageView);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        creationEchequier(gridPane);
-        pieces = new Pieces[8][8];
-        initializePieces();
-
-        updateChronoDisplay();
-
-        vbox.getChildren().addAll(blackVBox, gridPane, whiteVBox);
-        Scene scene = new Scene(vbox, tailleCase * taillePlateau, tailleCase * taillePlateau + 70);
-        primaryStage.setTitle("Chess Board");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        chronoBlanc.start();
     }
 
     private void clickSouris(MouseEvent event, int row, int col, StackPane clickedPane) {
@@ -243,48 +199,6 @@ public class echiquier extends Application {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    private List<int[]> getValidMovesForPawn(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-
-        // Calculer les mouvements valides pour le pion
-        int direction = pieceType.endsWith("B") ? -1 : 1; // La direction dépend de la couleur de la pièce
-        int startRow = pieceType.endsWith("B") ? 6 : 1; // La rangée de départ dépend de la couleur de la pièce
-        int[] singleStep = {direction, 0}; // Un pas en avant
-        int[] doubleStep = {2 * direction, 0}; // Deux pas en avant au premier mouvement
-        int[][] attackMoves = {{direction, 1}, {direction, -1}}; // Mouvements d'attaque
-
-        // Vérifier le mouvement simple en avant
-        if (isEmpty(row + direction, col)) {
-            validMoves.add(new int[]{row + direction, col});
-            // Vérifier le mouvement double en avant au premier mouvement
-            if (row == startRow && isEmpty(row + 2 * direction, col)) {
-                validMoves.add(new int[]{row + 2 * direction, col});
-            }
-        }
-
-        // Vérifier les mouvements d'attaque diagonaux
-        for (int[] move : attackMoves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
-            if (isValidPosition(newRow, newCol) && isEnemyPiece(newRow, newCol)) {
-                validMoves.add(new int[]{newRow, newCol});
-            }
-        }
-
-        return validMoves;
-    }
-
-
     // Fonction pour vérifier si la position est valide sur l'échiquier
     boolean isValidPosition(int row, int col) {
         return row >= 0 && row < taillePlateau && col >= 0 && col < taillePlateau;
@@ -306,5 +220,24 @@ public class echiquier extends Application {
         }
         return false;
     }
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        creationEchequier(gridPane);
+        pieces = new Pieces[8][8];
+        Pieces.initializePieces();
+
+        updateChronoDisplay();
+
+        vbox.getChildren().addAll(blackVBox, gridPane, whiteVBox);
+        Scene scene = new Scene(vbox, tailleCase * taillePlateau, tailleCase * taillePlateau + 70);
+        primaryStage.setTitle("Chess Board");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        chronoBlanc.start();
+    }
+
+
 
 }
