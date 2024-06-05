@@ -13,28 +13,24 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.shape.Circle;
 
-import javax.swing.*;
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 
 public class echiquier extends Application {
-    private static final int TILE_SIZE = 80;
-    private static final int BOARD_SIZE = 8;
+    private static final int tailleCase = 80;
+    private static final int taillePlateau = 8;
     private Pieces[][] pieces;
-    private boolean whiteTurn = true;
-    private boolean gameActive = true;
+    private boolean tourBlanc = true;
+    private boolean enJeux = true;
 
-    Circle circle = createIndicatorCircle();
     private StackPane selectedPiecePane = null;
-    private String selectedPieceType = null;
-    private int selectedPieceRow;
-    private int selectedPieceCol;
-    private Text turnText = new Text("White's turn");
-    private Chronometre whiteChronometre = new Chronometre(300, this);
-    private Chronometre blackChronometre = new Chronometre(300, this);
+    private String typePieceSelec = null;
+    private int lignePieceSelec;
+    private int colPieceSelec;
+    private Text tourJoueurText = new Text("White's turn");
+    private Chronometre chronoBlanc = new Chronometre(300, this);
+    private Chronometre chronoNoir = new Chronometre(300, this);
     private VBox vbox = new VBox();
     private VBox whiteVBox = new VBox();
     private VBox blackVBox = new VBox();
@@ -44,19 +40,14 @@ public class echiquier extends Application {
         launch(args);
     }
 
-    private Circle createIndicatorCircle() {
-        Circle circle = new Circle(TILE_SIZE / 8);
-        circle.setFill(Color.BLACK);
-        circle.setOpacity(0.5);
-        return circle;
-    }
+
     public void switchChrono() {
-        if (whiteTurn) {
-            whiteChronometre.start();
-            blackChronometre.stop();
+        if (tourBlanc) {
+            chronoBlanc.start();
+            chronoNoir.stop();
         } else {
-            blackChronometre.start();
-            whiteChronometre.stop();
+            chronoNoir.start();
+            chronoBlanc.stop();
         }
         updateChronoDisplay();
     }
@@ -65,29 +56,29 @@ public class echiquier extends Application {
         whiteVBox.getChildren().clear();
         blackVBox.getChildren().clear();
 
-        if (whiteTurn) {
-            whiteVBox.getChildren().addAll(turnText, whiteChronometre.getTimeLabel());
-            blackVBox.getChildren().addAll(new Text("Black's turn"), blackChronometre.getTimeLabel());
+        if (tourBlanc) {
+            whiteVBox.getChildren().addAll(tourJoueurText, chronoBlanc.getTimeLabel());
+            blackVBox.getChildren().addAll(new Text("Black's turn"), chronoNoir.getTimeLabel());
         } else {
-            whiteVBox.getChildren().addAll(new Text("White's turn"), whiteChronometre.getTimeLabel());
-            blackVBox.getChildren().addAll(turnText, blackChronometre.getTimeLabel());
+            whiteVBox.getChildren().addAll(new Text("White's turn"), chronoBlanc.getTimeLabel());
+            blackVBox.getChildren().addAll(tourJoueurText, chronoNoir.getTimeLabel());
         }
     }
 
     public void stopGame() {
-        gameActive = false;
-        whiteChronometre.stop();
-        blackChronometre.stop();
-        String winner = whiteTurn ? "Black" : "White";
-        turnText.setText(winner + " wins by timeout!");
+        enJeux = false;
+        chronoBlanc.stop();
+        chronoNoir.stop();
+        String winner = tourBlanc ? "Black" : "White";
+        tourJoueurText.setText(winner + " wins by timeout!");
     }
 
-    public GridPane creationEchequier(GridPane gridPane){
+    public GridPane creationEchequier(GridPane gridPane) {
         // Create chess board
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            for (int col = 0; col < BOARD_SIZE; col++) {
+        for (int row = 0; row < taillePlateau; row++) {
+            for (int col = 0; col < taillePlateau; col++) {
                 StackPane stackPane = new StackPane();
-                Rectangle rectangle = new Rectangle(TILE_SIZE, TILE_SIZE);
+                Rectangle rectangle = new Rectangle(tailleCase, tailleCase);
                 if ((row + col) % 2 == 0) {
                     rectangle.setFill(Color.web("#ebebd0", 1.0));
                 } else {
@@ -98,13 +89,13 @@ public class echiquier extends Application {
 
                 int finalRow = row;
                 int finalCol = col;
-                stackPane.setOnMouseClicked(event -> handleMouseClick(event, finalRow, finalCol, stackPane));
+                stackPane.setOnMouseClicked(event -> clickSouris(event, finalRow, finalCol, stackPane));
             }
         }
         return gridPane;
     }
 
-    private void initializePieces(){
+    private void initializePieces() {
         String[][] pieces = {
                 {"tourN", "cavalierN", "fouN", "reineN", "roiN", "fouN", "cavalierN", "tourN"},
                 {"pionN", "pionN", "pionN", "pionN", "pionN", "pionN", "pionN", "pionN"},
@@ -116,16 +107,16 @@ public class echiquier extends Application {
                 {"tourB", "cavalierB", "fouB", "reineB", "roiB", "fouB", "cavalierB", "tourB"}
         };
 
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            for (int col = 0; col < BOARD_SIZE; col++) {
+        for (int row = 0; row < taillePlateau; row++) {
+            for (int col = 0; col < taillePlateau; col++) {
                 String piece = pieces[row][col];
                 if (piece != null) {
                     Image image = new Image(getClass().getResourceAsStream("/img/" + piece + ".png"));
                     ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(TILE_SIZE);
-                    imageView.setFitHeight(TILE_SIZE);
+                    imageView.setFitWidth(tailleCase);
+                    imageView.setFitHeight(tailleCase);
                     imageView.setUserData(piece); // Set piece type as user data
-                    StackPane stackPane = (StackPane) gridPane.getChildren().get(row * BOARD_SIZE + col);
+                    StackPane stackPane = (StackPane) gridPane.getChildren().get(row * taillePlateau + col);
                     stackPane.getChildren().add(imageView);
                 }
             }
@@ -141,27 +132,27 @@ public class echiquier extends Application {
 
         updateChronoDisplay();
 
-        vbox.getChildren().addAll(whiteVBox, gridPane, blackVBox);
-        Scene scene = new Scene(vbox, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE + 70);
+        vbox.getChildren().addAll(blackVBox, gridPane, whiteVBox);
+        Scene scene = new Scene(vbox, tailleCase * taillePlateau, tailleCase * taillePlateau + 70);
         primaryStage.setTitle("Chess Board");
         primaryStage.setScene(scene);
         primaryStage.show();
-        whiteChronometre.start();
+        chronoBlanc.start();
     }
 
-    private void handleMouseClick(MouseEvent event, int row, int col, StackPane clickedPane) {
-        if (!gameActive) return;
+    private void clickSouris(MouseEvent event, int row, int col, StackPane clickedPane) {
+        if (!enJeux) return;
         if (selectedPiecePane == null) {
             // Select piece
             if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
                 ImageView pieceImageView = (ImageView) clickedPane.getChildren().get(1);
                 String pieceType = (String) pieceImageView.getUserData();
 
-                if ((whiteTurn && pieceType.endsWith("B")) || (!whiteTurn && pieceType.endsWith("N"))) {
+                if ((tourBlanc && pieceType.endsWith("B")) || (!tourBlanc && pieceType.endsWith("N"))) {
                     selectedPiecePane = clickedPane;
-                    selectedPieceType = pieceType;
-                    selectedPieceRow = row;
-                    selectedPieceCol = col;
+                    typePieceSelec = pieceType;
+                    lignePieceSelec = row;
+                    colPieceSelec = col;
 
                     // Change the color of the rectangle to yellow
                     Rectangle rectangle = (Rectangle) clickedPane.getChildren().get(0);
@@ -174,7 +165,15 @@ public class echiquier extends Application {
             }
         } else {
             // Move piece
-            if (isValidMove(row, col)) {
+            List<int[]> validMoves = getValidMoves(lignePieceSelec, colPieceSelec, typePieceSelec);
+            boolean isValidMove = false;
+            for (int[] move : validMoves) {
+                if (move[0] == row && move[1] == col) {
+                    isValidMove = true;
+                    break;
+                }
+            }
+            if (isValidMove) {
                 // Remove the target piece if it exists (is an enemy piece)
                 if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
                     clickedPane.getChildren().remove(1);
@@ -189,27 +188,44 @@ public class echiquier extends Application {
                 resetColors();
 
                 selectedPiecePane = null;
-                selectedPieceType = null;
-                whiteTurn = !whiteTurn;
+                typePieceSelec = null;
+                tourBlanc = !tourBlanc;
                 switchChrono();
-                turnText.setText(whiteTurn ? "White's turn" : "Black's turn");
+                tourJoueurText.setText(tourBlanc ? "White's turn" : "Black's turn");
             } else {
                 // Deselect the piece if move is not valid
                 resetColors();
 
                 selectedPiecePane = null;
-                selectedPieceType = null;
+                typePieceSelec = null;
             }
         }
     }
 
+    private List<int[]> getValidMoves(int row, int col, String pieceType) {
+        // Call the appropriate method based on the piece type
+        if (pieceType.startsWith("pion")) {
+            return pion.getValidMovesForPawn(row, col, pieceType, this);
+        } else if (pieceType.startsWith("tour")) {
+            return tour.getValidMovesForRook(row, col, pieceType,this);
+        } else if (pieceType.startsWith("cavalier")) {
+            return getValidMovesForKnight(row, col, pieceType);
+        } else if (pieceType.startsWith("fou")) {
+            return getValidMovesForBishop(row, col, pieceType);
+        } else if (pieceType.startsWith("reine")) {
+            return getValidMovesForQueen(row, col, pieceType);
+        } else if (pieceType.startsWith("roi")) {
+            return getValidMovesForKing(row, col, pieceType);
+        }
+        return new ArrayList<>();
+    }
     private void highlightValidMoves(List<int[]> validMoves) {
         // Highlight the valid moves on the chessboard
         for (int[] move : validMoves) {
             int moveRow = move[0];
             int moveCol = move[1];
             // Access the corresponding StackPane in the gridPane and change its appearance
-            StackPane stackPane = (StackPane) gridPane.getChildren().get(moveRow * BOARD_SIZE + moveCol);
+            StackPane stackPane = (StackPane) gridPane.getChildren().get(moveRow * taillePlateau + moveCol);
             Rectangle rectangle = (Rectangle) stackPane.getChildren().get(0);
             rectangle.setFill(Color.LIGHTGREEN);
         }
@@ -226,45 +242,8 @@ public class echiquier extends Application {
         }
     }
 
-    private List<int[]> getValidMoves(int row, int col, String pieceType) {
-        // Call the appropriate method based on the piece type
-        if (pieceType.startsWith("pion")) {
-            return getValidMovesForPawn(row, col, pieceType);
-        } else if (pieceType.startsWith("tour")) {
-            return getValidMovesForRook(row, col, pieceType);
-        } else if (pieceType.startsWith("cavalier")) {
-            return getValidMovesForKnight(row, col, pieceType);
-        } else if (pieceType.startsWith("fou")) {
-            return getValidMovesForBishop(row, col, pieceType);
-        } else if (pieceType.startsWith("reine")) {
-            return getValidMovesForQueen(row, col, pieceType);
-        } else if (pieceType.startsWith("roi")) {
-            return getValidMovesForKing(row, col, pieceType);
-        }
-        return new ArrayList<>();
-    }
 
 
-    private List<int[]> getValidMovesForRook(int row, int col, String pieceType) {
-        List<int[]> validMoves = new ArrayList<>();
-        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-        for (int[] dir : directions) {
-            int newRow = row;
-            int newCol = col;
-            while (true) {
-                newRow += dir[0];
-                newCol += dir[1];
-                if (!isValidPosition(newRow, newCol) || (!isEmpty(newRow, newCol) && !isEnemyPiece(newRow, newCol))) {
-                    break;
-                }
-                validMoves.add(new int[]{newRow, newCol});
-                if (!isEmpty(newRow, newCol)) {
-                    break;
-                }
-            }
-        }
-        return validMoves;
-    }
 
     private List<int[]> getValidMovesForKnight(int row, int col, String pieceType) {
         List<int[]> validMoves = new ArrayList<>();
@@ -302,7 +281,7 @@ public class echiquier extends Application {
 
     private List<int[]> getValidMovesForQueen(int row, int col, String pieceType) {
         List<int[]> validMoves = new ArrayList<>();
-        validMoves.addAll(getValidMovesForRook(row, col, pieceType));
+        validMoves.addAll(tour.getValidMovesForRook(row, col, pieceType,this));
         validMoves.addAll(getValidMovesForBishop(row, col, pieceType));
         return validMoves;
     }
@@ -318,22 +297,6 @@ public class echiquier extends Application {
             }
         }
         return validMoves;
-    }
-    private boolean isValidMove(int row, int col) {
-        if (selectedPieceType.startsWith("pion")) {
-            return isValidPawnMove(row, col);
-        } else if (selectedPieceType.startsWith("tour")) {
-            return isValidRookMove(row, col);
-        } else if (selectedPieceType.startsWith("cavalier")) {
-            return isValidKnightMove(row, col);
-        } else if (selectedPieceType.startsWith("fou")) {
-            return isValidBishopMove(row, col);
-        } else if (selectedPieceType.startsWith("reine")) {
-            return isValidQueenMove(row, col);
-        } else if (selectedPieceType.startsWith("roi")) {
-            return isValidKingMove(row, col);
-        }
-        return false;
     }
 
     private List<int[]> getValidMovesForPawn(int row, int col, String pieceType) {
@@ -368,87 +331,26 @@ public class echiquier extends Application {
     }
 
 
-
     // Fonction pour vérifier si la position est valide sur l'échiquier
-    private boolean isValidPosition(int row, int col) {
-        return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
-    }
-    private boolean isValidPawnMove(int row, int col) {
-        if (selectedPieceType.endsWith("B")) {
-            return (selectedPieceRow == 6 && row == 4 && col == selectedPieceCol && isEmpty(row, col)) ||
-                    (row == selectedPieceRow - 1 && col == selectedPieceCol && isEmpty(row, col)) ||
-                    (row == selectedPieceRow - 1 && Math.abs(col - selectedPieceCol) == 1 && isEnemyPiece(row, col));
-        } else if (selectedPieceType.endsWith("N")) {
-            return (selectedPieceRow == 1 && row == 3 && col == selectedPieceCol && isEmpty(row, col)) ||
-                    (row == selectedPieceRow + 1 && col == selectedPieceCol && isEmpty(row, col)) ||
-                    (row == selectedPieceRow + 1 && Math.abs(col - selectedPieceCol) == 1 && isEnemyPiece(row, col));
-        }
-        return false;
+    boolean isValidPosition(int row, int col) {
+        return row >= 0 && row < taillePlateau && col >= 0 && col < taillePlateau;
     }
 
-    private boolean isValidRookMove(int row, int col) {
-        if (row == selectedPieceRow) {
-            for (int c = Math.min(col, selectedPieceCol) + 1; c < Math.max(col, selectedPieceCol); c++) {
-                if (!isEmpty(row, c)) {
-                    return false;
-                }
-            }
-            return isEmpty(row, col) || isEnemyPiece(row, col);
-        } else if (col == selectedPieceCol) {
-            for (int r = Math.min(row, selectedPieceRow) + 1; r < Math.max(row, selectedPieceRow); r++) {
-                if (!isEmpty(r, col)) {
-                    return false;
-                }
-            }
-            return isEmpty(row, col) || isEnemyPiece(row, col);
-        }
-        return false;
-    }
-
-    private boolean isValidKnightMove(int row, int col) {
-        int rowDiff = Math.abs(row - selectedPieceRow);
-        int colDiff = Math.abs(col - selectedPieceCol);
-        return ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2)) && ((isEmpty(row, col) || isEnemyPiece(row, col)));
-    }
-
-    private boolean isValidBishopMove(int row, int col) {
-        if (Math.abs(row - selectedPieceRow) == Math.abs(col - selectedPieceCol)) {
-            int rowDirection = (row - selectedPieceRow) / Math.abs(row - selectedPieceRow);
-            int colDirection = (col - selectedPieceCol) / Math.abs(col - selectedPieceCol);
-            for (int i = 1; i < Math.abs(row - selectedPieceRow); i++) {
-                if (!isEmpty(selectedPieceRow + i * rowDirection, selectedPieceCol + i * colDirection)) {
-                    return false;
-                }
-            }
-            return isEmpty(row, col) || isEnemyPiece(row, col);
-        }
-        return false;
-    }
-
-    private boolean isValidQueenMove(int row, int col) {
-        return isValidRookMove(row, col) || isValidBishopMove(row, col);
-    }
-
-    private boolean isValidKingMove(int row, int col) {
-        int rowDiff = Math.abs(row - selectedPieceRow);
-        int colDiff = Math.abs(col - selectedPieceCol);
-        return (rowDiff <= 1 && colDiff <= 1) && (isEmpty(row, col) || isEnemyPiece(row, col));
-    }
-
-    private boolean isEmpty(int row, int col) {
+    boolean isEmpty(int row, int col) {
         GridPane gridPane = (GridPane) selectedPiecePane.getParent();
-        StackPane targetPane = (StackPane) gridPane.getChildren().get(row * BOARD_SIZE + col);
+        StackPane targetPane = (StackPane) gridPane.getChildren().get(row * taillePlateau + col);
         return targetPane.getChildren().size() == 1;
     }
 
-    private boolean isEnemyPiece(int row, int col) {
+    boolean isEnemyPiece(int row, int col) {
         GridPane gridPane = (GridPane) selectedPiecePane.getParent();
-        StackPane targetPane = (StackPane) gridPane.getChildren().get(row * BOARD_SIZE + col);
+        StackPane targetPane = (StackPane) gridPane.getChildren().get(row * taillePlateau + col);
         if (targetPane.getChildren().size() > 1) {
             ImageView pieceImageView = (ImageView) targetPane.getChildren().get(1);
             String pieceType = (String) pieceImageView.getUserData();
-            return (whiteTurn && pieceType.endsWith("N")) || (!whiteTurn && pieceType.endsWith("B"));
+            return (tourBlanc && pieceType.endsWith("N")) || (!tourBlanc && pieceType.endsWith("B"));
         }
         return false;
     }
+
 }

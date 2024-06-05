@@ -16,4 +16,5 @@ public abstract class Pieces {
     public String getColor() {
         return color;
     }
+
 }
