@@ -21,11 +21,10 @@ public class MainMenuController {
     private Button exitButton;
 
     @FXML
-    private void handleStartGame(ActionEvent event) {
-        echiquier echiquier = new echiquier();
+    private void handleStartAccueil(ActionEvent event) {
+        accueil  debut= new accueil();
         try {
-            echiquier.start(new Stage());  // Ouvrir l'interface de l'échiquier dans une nouvelle fenêtre
-            //   primaryStage.close();  // Fermer la fenêtre d'accueil
+            debut.start(new Stage());
         } catch (Exception e) {
             e.printStackTrace();
         }

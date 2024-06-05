@@ -27,21 +27,6 @@ public class main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    @FXML
-    private void handleStartGame(ActionEvent event) {
-        echiquier echiquier = new echiquier();
-        try {
-            echiquier.start(new Stage());  // Ouvrir l'interface de l'échiquier dans une nouvelle fenêtre
-            //main.primaryStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    private void handleExit(ActionEvent event) {
-        // Code pour fermer l'application
-        System.exit(0);
-    }
 
     public static void main(String[] args) {
         launch(args);
