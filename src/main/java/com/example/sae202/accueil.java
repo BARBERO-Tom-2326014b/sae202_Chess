@@ -1,13 +1,13 @@
 package com.example.sae202;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -21,7 +21,6 @@ import java.io.PrintWriter;
 public class accueil extends Application {
 
     private Stage primaryStage;
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -44,9 +43,9 @@ public class accueil extends Application {
             System.err.println("Erreur au chargement: " + e);
         }
     }
+
     @FXML
     private void jouerAvecAmi() {
-        // Interface pour entrer les noms des joueurs
         VBox root = new VBox(10);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10));
@@ -74,19 +73,27 @@ public class accueil extends Application {
         joueur2Prenom.setPromptText("Prénom du joueur 2");
         root.getChildren().add(joueur2Prenom);
 
-        Button validerJoueurs = new Button("Valider");
+        // ComboBox for time selection
+        Label timeLabel = new Label("Temps :");
+        root.getChildren().add(timeLabel);
+
+        ComboBox<String> timeComboBox = new ComboBox<>();
+        timeComboBox.getItems().addAll("5 minutes", "10 minutes", "15 minutes");
+        timeComboBox.setPromptText("Choisis le temps de partie");
+        root.getChildren().add(timeComboBox);
+
+        Button validerJoueurs = new Button("Validate");
         validerJoueurs.setOnAction(e -> {
-            // Enregistrer le joueur 1
-            String nom = joueur1Nom.getText();
-            String prenom = joueur1Prenom.getText();
-            enregistrerJoueur(nom, prenom, 0, 0);
-            String nom2 = joueur2Nom.getText();
-            String prenom2 = joueur2Prenom.getText();
-            enregistrerJoueur(nom2, prenom2, 0, 0);
-            echiquier echiquier = new echiquier();
+//            String joueur1 = joueur1ComboBox.getValue();
+//            String joueur2 = joueur2ComboBox.getValue();
+            String selectedTime = timeComboBox.getValue();
+
+            // Parse selected time to extract minutes
+            int timeInMinutes = parseTime(selectedTime);
+            echiquier echiquier = new echiquier(timeInMinutes * 60); // Convert minutes to seconds for the chronometer
             try {
                 primaryStage.close();
-                echiquier.start(new Stage());  // Ouvrir l'interface de l'échiquier dans une nouvelle fenêtre
+                echiquier.start(new Stage());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -99,7 +106,6 @@ public class accueil extends Application {
 
     @FXML
     private void jouerContreOrdinateur() {
-        // Interface pour entrer le nom du joueur humain
         VBox root = new VBox(10);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10));
@@ -114,17 +120,26 @@ public class accueil extends Application {
         TextField joueurPrenom = new TextField();
         joueurPrenom.setPromptText("Prénom");
         root.getChildren().add(joueurPrenom);
+        // ComboBox for time selection
+        Label timeLabel = new Label("Select time:");
+        root.getChildren().add(timeLabel);
 
-        Button valider = new Button("Valider");
+        ComboBox<String> timeComboBox = new ComboBox<>();
+        timeComboBox.getItems().addAll("5 minutes", "10 minutes", "15 minutes");
+        timeComboBox.setPromptText("Select Time");
+        root.getChildren().add(timeComboBox);
+
+        Button valider = new Button("Validate");
         valider.setOnAction(e -> {
-            // Enregistrer le joueur
-            String nom = joueurNom.getText();
-            String prenom = joueurPrenom.getText();
-            enregistrerJoueur(nom, prenom, 0, 0);
-            echiquier echiquier = new echiquier();
+//            String joueur = joueurComboBox.getValue();
+            String selectedTime = timeComboBox.getValue();
+
+            // Parse selected time to extract minutes
+            int timeInMinutes = parseTime(selectedTime);
+            echiquier echiquier = new echiquier(timeInMinutes * 60); // Convert minutes to seconds for the chronometer
             try {
                 primaryStage.close();
-                echiquier.start(new Stage());  // Ouvrir l'interface de l'échiquier dans une nouvelle fenêtre
+                echiquier.start(new Stage());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -135,9 +150,22 @@ public class accueil extends Application {
         primaryStage.setScene(scene);
     }
 
-    private void enregistrerJoueur(String nom, String prenom, int partiesJouees, int partiesGagnees) {
+    private int parseTime(String selectedTime) {
+        switch (selectedTime) {
+            case "5 minutes":
+                return 5;
+            case "10 minutes":
+                return 10;
+            case "15 minutes":
+                return 15;
+            default:
+                return 5; // Default to 5 minutes
+        }
+    }
+
+    private void enregistrerJoueur(String nom, String prenom, int temps, int partiesGagnees) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("joueur.txt", true))) {
-            writer.println(nom + ";" + prenom + ";" + partiesJouees + ";" + partiesGagnees);
+            writer.println(nom + ";" + prenom + ";" + temps + ";" + partiesGagnees);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,4 +175,3 @@ public class accueil extends Application {
         launch(args);
     }
 }
-
