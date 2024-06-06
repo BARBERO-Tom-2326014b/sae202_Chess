@@ -2,7 +2,11 @@ package com.example.sae202;
 
 import java.util.ArrayList;
 import java.util.List;
-public class fou {
+public class fou extends Pieces{
+    public fou(String type, String color) {
+        super(type, color);
+    }
+
     public static List<int[]> getValidMovesForBishop(int row, int col, String pieceType, echiquier board) {
         List<int[]> validMoves = new ArrayList<>();
         int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};

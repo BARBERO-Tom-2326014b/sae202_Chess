@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
-public class tour {
+public class tour extends Pieces{
+    public tour(String type, String color) {
+        super(type, color);
+    }
+
     public static List<int[]> getValidMovesForRook(int row, int col, String pieceType, echiquier board) {
         List<int[]> validMoves = new ArrayList<>();
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};

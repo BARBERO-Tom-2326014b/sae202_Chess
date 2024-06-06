@@ -3,7 +3,11 @@ package com.example.sae202;
 import java.util.ArrayList;
 import java.util.List;
 
-public class roi {
+public class roi extends Pieces{
+    public roi(String type, String color) {
+        super(type, color);
+    }
+
     public static List<int[]> getValidMovesForKing(int row, int col, String pieceType, echiquier board) {
         List<int[]> validMoves = new ArrayList<>();
         int[][] moves = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
