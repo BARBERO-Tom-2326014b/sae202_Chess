@@ -32,6 +32,9 @@ public class JouerAvecOrdiController {
         if (!nom.isEmpty() && !prenom.isEmpty() && tempsSelectionne != null) {
             // Les noms des joueurs sont valides, démarrer le jeu d'échecs avec le temps choisi
             switch (tempsSelectionne) {
+                case "1 minutes":
+                    tempsChoisi = 60; // 15 minutes en secondes
+                    break;
                 case "5 minutes":
                     tempsChoisi = 300; // 5 minutes en secondes
                     break;
@@ -41,12 +44,15 @@ public class JouerAvecOrdiController {
                 case "15 minutes":
                     tempsChoisi = 900; // 15 minutes en secondes
                     break;
+                case "30 minutes":
+                    tempsChoisi = 1800; // 15 minutes en secondes
+                    break;
                 default:
                     tempsChoisi = 300; // Par défaut, 5 minutes en secondes
                     break;
             }
 
-            echiquier echecs = new echiquier(tempsChoisi);
+            echiquierBot echecs = new echiquierBot(tempsChoisi);
             Stage stage = new Stage();
             try {
                 echecs.start(stage);
@@ -67,6 +73,5 @@ public class JouerAvecOrdiController {
         }
     }
 }
-
 
 

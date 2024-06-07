@@ -39,6 +39,9 @@ public class JouerAvecAmiController {
         if (!nom1.isEmpty() && !prenom1.isEmpty() && !nom2.isEmpty() && !prenom2.isEmpty() && tempsSelectionne != null) {
             // Les noms des joueurs sont valides, démarrer le jeu d'échecs avec le temps choisi
             switch (tempsSelectionne) {
+                case "1 minutes":
+                    tempsChoisi = 60; // 15 minutes en secondes
+                    break;
                 case "5 minutes":
                     tempsChoisi = 300; // 5 minutes en secondes
                     break;
@@ -47,6 +50,9 @@ public class JouerAvecAmiController {
                     break;
                 case "15 minutes":
                     tempsChoisi = 900; // 15 minutes en secondes
+                    break;
+                case "30 minutes":
+                    tempsChoisi = 1800; // 15 minutes en secondes
                     break;
                 default:
                     tempsChoisi = 300; // Par défaut, 5 minutes en secondes

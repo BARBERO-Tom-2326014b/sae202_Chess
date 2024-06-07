@@ -20,9 +20,13 @@
         <ComboBox fx:id="timeComboBox" promptText="Choisis le temps de partie">
             <items>
                 <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="1 minutes"/>
+                    <String fx:value="3 minutes"/>
                     <String fx:value="5 minutes"/>
                     <String fx:value="10 minutes"/>
                     <String fx:value="15 minutes"/>
+                    <String fx:value="30 minutes"/>
+
                 </FXCollections>
             </items>
         </ComboBox>

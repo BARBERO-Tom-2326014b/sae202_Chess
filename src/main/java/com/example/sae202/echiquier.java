@@ -78,9 +78,9 @@ public class echiquier extends Application {
 
         if (tourBlanc) {
             whiteVBox.getChildren().addAll(new Text("Tour Blanc"), chronoBlanc.getTimeLabel());
-            blackVBox.getChildren().addAll(new Text("\n"), chronoNoir.getTimeLabel());
+            blackVBox.getChildren().addAll(new Text(""), chronoNoir.getTimeLabel());
         } else {
-            whiteVBox.getChildren().addAll(new Text("\n"), chronoBlanc.getTimeLabel());
+            whiteVBox.getChildren().addAll(new Text(""), chronoBlanc.getTimeLabel());
             blackVBox.getChildren().addAll(new Text("Tour Noir"), chronoNoir.getTimeLabel());
         }
     }
@@ -370,4 +370,3 @@ public class echiquier extends Application {
     }
 
 }
-
