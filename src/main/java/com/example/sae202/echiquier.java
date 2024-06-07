@@ -1,12 +1,13 @@
 package com.example.sae202;
 
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -19,12 +20,8 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 public class echiquier extends Application {
     static final int tailleCase = 80;
@@ -32,7 +29,6 @@ public class echiquier extends Application {
     private Pieces[][] pieces;
     private boolean tourBlanc = true;
     private boolean enJeux = true;
-
 
     private StackPane selectedPiecePane = null;
     private String typePieceSelec = null;
@@ -43,15 +39,24 @@ public class echiquier extends Application {
     private HBox capturedPiecesNoirHBox = new HBox();
     private int colPieceSelec;
     private Text tourJoueurText = new Text("White's turn");
-    private Chronometre chronoBlanc = new Chronometre(300, this);
-    private Chronometre chronoNoir = new Chronometre(300, this);
+    private Chronometre chronoBlanc; // Initialize the chronometers
+    private Chronometre chronoNoir;
     private VBox vbox = new VBox();
     private VBox whiteVBox = new VBox();
     private VBox blackVBox = new VBox();
     static GridPane gridPane = new GridPane();
     private Stage primaryStage; // Add a reference to the primary stage
+    private int initialTime;
 
+    public echiquier() {
+        this(300); // Default to 5 minutes if no time is specified
+    }
 
+    public echiquier(int initialTime) {
+        this.initialTime = initialTime;
+        chronoBlanc = new Chronometre(initialTime, this);
+        chronoNoir = new Chronometre(initialTime, this);
+    }
     public static void main(String[] args) {
         launch(args);
     }
@@ -67,11 +72,9 @@ public class echiquier extends Application {
         updateChronoDisplay();
     }
 
-
     private void updateChronoDisplay() {
         whiteVBox.getChildren().clear();
         blackVBox.getChildren().clear();
-
 
         if (tourBlanc) {
             whiteVBox.getChildren().addAll(new Text("Tour Blanc"), chronoBlanc.getTimeLabel());
@@ -82,7 +85,6 @@ public class echiquier extends Application {
         }
     }
 
-
     public void stopGame() {
         enJeux = false;
         chronoBlanc.stop();
@@ -90,19 +92,17 @@ public class echiquier extends Application {
         String winner = tourBlanc ? "Noir" : "Blanc";
         tourJoueurText.setText(winner + " wins!");
 
-
         // Close the primary stage and show the alert
         Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Game Over ! ");
             alert.setHeaderText(null);
-            alert.setContentText("Les "+ winner + " ont gagnés");
+            alert.setContentText("Les " + winner + " ont gagnés");
             primaryStage.close();
             alert.showAndWait();
             Platform.exit();
         });
     }
-
 
     public GridPane creationEchequier(GridPane gridPane) {
         for (int row = 0; row < taillePlateau; row++) {
@@ -117,7 +117,6 @@ public class echiquier extends Application {
                 stackPane.getChildren().add(rectangle);
                 gridPane.add(stackPane, col, row);
 
-
                 int finalRow = row;
                 int finalCol = col;
                 stackPane.setOnMouseClicked(event -> clickSouris(event, finalRow, finalCol, stackPane));
@@ -125,7 +124,6 @@ public class echiquier extends Application {
         }
         return gridPane;
     }
-
 
     private void initializePieces() {
         String[][] pieces = {
@@ -138,7 +136,6 @@ public class echiquier extends Application {
                 {"pionB", "pionB", "pionB", "pionB", "pionB", "pionB", "pionB", "pionB"},
                 {"tourB", "cavalierB", "fouB", "reineB", "roiB", "fouB", "cavalierB", "tourB"}
         };
-
 
         for (int row = 0; row < taillePlateau; row++) {
             for (int col = 0; col < taillePlateau; col++) {
@@ -156,20 +153,19 @@ public class echiquier extends Application {
         }
     }
 
-
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage; // Initialize the primary stage reference
         creationEchequier(gridPane);
         Pieces.initializePieces();
         updateChronoDisplay();
-        vbox.getChildren().addAll(blackVBox,capturedPiecesNoirHBox, gridPane, whiteVBox,capturedPiecesBlancHBox);
+        vbox.getChildren().addAll(blackVBox, capturedPiecesNoirHBox, gridPane, whiteVBox, capturedPiecesBlancHBox);
         Scene scene = new Scene(vbox, tailleCase * taillePlateau, tailleCase * taillePlateau + 70);
         primaryStage.setTitle("Chess Board");
         primaryStage.setScene(scene);
         primaryStage.show();
-        chronoBlanc.start();
     }
+
 
 
     private void clickSouris(MouseEvent event, int row, int col, StackPane clickedPane) {
