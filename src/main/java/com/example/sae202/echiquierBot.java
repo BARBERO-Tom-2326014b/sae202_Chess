@@ -416,12 +416,15 @@ public class echiquierBot extends echiquier {
 
     private void playComputerMove() {
         List<int[]> possibleMoves = getAllPossibleMovesForBlack();
-        if (possibleMoves.isEmpty()) {
-            return; // No possible moves for black
+        while(possibleMoves.isEmpty()) {
+            possibleMoves = getAllPossibleMovesForBlack(); // No possible moves for black
         }
 
         // Select a random move
         int[] selectedMove = possibleMoves.get(new Random().nextInt(possibleMoves.size()));
+        while(selectedMove.length==0) {
+            selectedMove = possibleMoves.get(new Random().nextInt(possibleMoves.size()));
+        }
 
         int startRow = selectedMove[0];
         int startCol = selectedMove[1];
