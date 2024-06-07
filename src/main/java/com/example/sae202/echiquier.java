@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -20,7 +21,9 @@ import javafx.stage.Stage;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class echiquier extends Application {
@@ -34,6 +37,10 @@ public class echiquier extends Application {
     private StackPane selectedPiecePane = null;
     private String typePieceSelec = null;
     private int lignePieceSelec;
+    private List<ImageView> PieceCapNoir = new ArrayList<>();
+    private List<ImageView> PieceCapBlanc = new ArrayList<>();
+    private HBox capturedPiecesBlancHBox = new HBox();
+    private HBox capturedPiecesNoirHBox = new HBox();
     private int colPieceSelec;
     private Text tourJoueurText = new Text("White's turn");
     private Chronometre chronoBlanc = new Chronometre(300, this);
@@ -48,7 +55,6 @@ public class echiquier extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 
     public void switchChrono() {
         if (tourBlanc) {
@@ -68,11 +74,11 @@ public class echiquier extends Application {
 
 
         if (tourBlanc) {
-            whiteVBox.getChildren().addAll(tourJoueurText, chronoBlanc.getTimeLabel());
-            blackVBox.getChildren().addAll(new Text("Black's turn"), chronoNoir.getTimeLabel());
+            whiteVBox.getChildren().addAll(new Text("Tour Blanc"), chronoBlanc.getTimeLabel());
+            blackVBox.getChildren().addAll(new Text("\n"), chronoNoir.getTimeLabel());
         } else {
-            whiteVBox.getChildren().addAll(new Text("White's turn"), chronoBlanc.getTimeLabel());
-            blackVBox.getChildren().addAll(tourJoueurText, chronoNoir.getTimeLabel());
+            whiteVBox.getChildren().addAll(new Text("\n"), chronoBlanc.getTimeLabel());
+            blackVBox.getChildren().addAll(new Text("Tour Noir"), chronoNoir.getTimeLabel());
         }
     }
 
@@ -81,16 +87,16 @@ public class echiquier extends Application {
         enJeux = false;
         chronoBlanc.stop();
         chronoNoir.stop();
-        String winner = tourBlanc ? "White" : "Black";
+        String winner = tourBlanc ? "Noir" : "Blanc";
         tourJoueurText.setText(winner + " wins!");
 
 
         // Close the primary stage and show the alert
         Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Game Over");
+            alert.setTitle("Game Over ! ");
             alert.setHeaderText(null);
-            alert.setContentText(winner + " wins by capturing the king!");
+            alert.setContentText("Les "+ winner + " ont gagnés");
             primaryStage.close();
             alert.showAndWait();
             Platform.exit();
@@ -157,7 +163,7 @@ public class echiquier extends Application {
         creationEchequier(gridPane);
         Pieces.initializePieces();
         updateChronoDisplay();
-        vbox.getChildren().addAll(blackVBox, gridPane, whiteVBox);
+        vbox.getChildren().addAll(blackVBox,capturedPiecesNoirHBox, gridPane, whiteVBox,capturedPiecesBlancHBox);
         Scene scene = new Scene(vbox, tailleCase * taillePlateau, tailleCase * taillePlateau + 70);
         primaryStage.setTitle("Chess Board");
         primaryStage.setScene(scene);
@@ -202,6 +208,7 @@ public class echiquier extends Application {
                         return;
                     }
                     clickedPane.getChildren().remove(targetPieceImageView);
+                    capturePiece(targetPieceImageView);
                 }
                 ImageView pieceImageView = (ImageView) selectedPiecePane.getChildren().get(1);
                 selectedPiecePane.getChildren().remove(pieceImageView);
@@ -221,7 +228,7 @@ public class echiquier extends Application {
                 typePieceSelec = null;
                 tourBlanc = !tourBlanc;
                 switchChrono();
-                tourJoueurText.setText(tourBlanc ? "White's turn" : "Black's turn");
+                tourJoueurText.setText(tourBlanc ? "Tour noir" : "Tour Blanc");
             } else {
                 resetColors();
                 selectedPiecePane = null;
@@ -229,80 +236,11 @@ public class echiquier extends Application {
             }
         }
     }
-
-
-    private void clickSourisCheck(MouseEvent event, int row, int col, StackPane clickedPane) {
-        if (!enJeux) return;
-        if (selectedPiecePane == null) {
-            // Select piece
-            if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
-                ImageView pieceImageView = (ImageView) clickedPane.getChildren().get(1);
-                String pieceType = (String) pieceImageView.getUserData();
-                if ((tourBlanc && pieceType.endsWith("B")) || (!tourBlanc && pieceType.endsWith("N"))) {
-                    selectedPiecePane = clickedPane;
-                    typePieceSelec = pieceType;
-                    lignePieceSelec = row;
-                    colPieceSelec = col;
-                    Rectangle rectangle = (Rectangle) clickedPane.getChildren().get(0);
-                    rectangle.setFill(Color.YELLOW);
-                    List<int[]> validMoves = getValidMoves(row, col, pieceType);
-                    highlightValidMoves(validMoves);
-                }
-            }
-        } else {
-            List<int[]> validMoves = getValidMoves(lignePieceSelec, colPieceSelec, typePieceSelec);
-            boolean isValidMove = false;
-            for (int[] move : validMoves) {
-                if (move[0] == row && move[1] == col) {
-                    isValidMove = true;
-                    break;
-                }
-            }
-            if (isValidMove) {
-                if (!clickedPane.getChildren().isEmpty() && clickedPane.getChildren().size() > 1) {
-                    ImageView targetPieceImageView = (ImageView) clickedPane.getChildren().get(1);
-                    String targetPieceType = (String) targetPieceImageView.getUserData();
-                    if (targetPieceType.endsWith("roiB") || targetPieceType.endsWith("roiN")) {
-                        stopGame();
-                        return;
-                    }
-                    clickedPane.getChildren().remove(targetPieceImageView);
-                }
-                ImageView pieceImageView = (ImageView) selectedPiecePane.getChildren().get(1);
-                selectedPiecePane.getChildren().remove(pieceImageView);
-                clickedPane.getChildren().add(pieceImageView);
-                resetColors();
-                boolean currentPlayerIsWhite = !tourBlanc; // The player who just moved
-                if (isKingInCheck(currentPlayerIsWhite)) {
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Check");
-                    alert.setHeaderText(null);
-                    alert.setContentText((currentPlayerIsWhite ? "White" : "Black") + " is in check!");
-                    alert.showAndWait();
-                }
-
-
-                selectedPiecePane = null;
-                typePieceSelec = null;
-                tourBlanc = !tourBlanc;
-                switchChrono();
-                tourJoueurText.setText(tourBlanc ? "White's turn" : "Black's turn");
-            } else {
-                resetColors();
-                selectedPiecePane = null;
-                typePieceSelec = null;
-            }
-        }
-    }
-
-
-
-
 
 
     private List<int[]> getValidMoves(int row, int col, String pieceType) {
         if (pieceType.startsWith("pion")) {
-            return pion.getValidMovesForPawn(row, col, pieceType,this);
+            return pion.getValidMovesForPawn(row, col, pieceType, this);
         } else if (pieceType.startsWith("tour")) {
             return tour.getValidMovesForRook(row, col, pieceType, this);
         } else if (pieceType.startsWith("cavalier")) {
@@ -408,5 +346,32 @@ public class echiquier extends Application {
         }
         return false;
     }
+
+    private void capturePiece(ImageView targetPieceImageView) {
+        targetPieceImageView.setFitWidth(35);
+        targetPieceImageView.setFitHeight(35);
+        String targetPieceType = (String) targetPieceImageView.getUserData();
+
+        // Ajouter l'image de la pièce capturée à la liste appropriée
+        if (targetPieceType.endsWith("N")) {
+            PieceCapNoir.add(targetPieceImageView);
+        } else if (targetPieceType.endsWith("B")) {
+            PieceCapBlanc.add(targetPieceImageView);
+        }
+
+        // Mettre à jour l'affichage dans les HBox
+        updateCapturedPiecesDisplay();
+    }
+
+    private void updateCapturedPiecesDisplay() {
+        // Effacer les enfants des HBox
+        capturedPiecesNoirHBox.getChildren().clear();
+        capturedPiecesBlancHBox.getChildren().clear();
+
+        // Ajouter toutes les images des pièces capturées à la HBox appropriée
+        capturedPiecesNoirHBox.getChildren().addAll(PieceCapNoir);
+        capturedPiecesBlancHBox.getChildren().addAll(PieceCapBlanc);
+    }
+
 }
 
