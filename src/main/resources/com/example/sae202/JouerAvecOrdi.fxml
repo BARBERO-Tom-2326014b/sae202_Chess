@@ -9,27 +9,30 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.sae202.JouerAvecOrdiController"
             style="-fx-background-color: #49494f;"> <!-- Définir la couleur de fond -->
-    <VBox alignment="CENTER" spacing="10">
-        <padding>
-            <Insets top="10" right="10" bottom="10" left="10"/>
-        </padding>
-        <Label text="Entrez votre nom et prénom"/>
-        <TextField fx:id="joueurNom" promptText="Nom"/>
-        <TextField fx:id="joueurPrenom" promptText="Prénom"/>
-        <Label text="Temps :"/>
-        <ComboBox fx:id="timeComboBox" promptText="Choisis le temps de partie">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="1 minutes"/>
-                    <String fx:value="3 minutes"/>
-                    <String fx:value="5 minutes"/>
-                    <String fx:value="10 minutes"/>
-                    <String fx:value="15 minutes"/>
-                    <String fx:value="30 minutes"/>
-
-                </FXCollections>
-            </items>
-        </ComboBox>
-        <Button text="Valider" onAction="#valider"/>
-    </VBox>
+    <children>
+        <VBox alignment="CENTER" spacing="10"
+              AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Entrez votre nom et prénom"/>
+            <TextField fx:id="joueurNom" promptText="Nom"/>
+            <TextField fx:id="joueurPrenom" promptText="Prénom"/>
+            <Label text="Temps :"/>
+            <ComboBox fx:id="timeComboBox" promptText="Choisis le temps de partie">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="1 minutes"/>
+                        <String fx:value="3 minutes"/>
+                        <String fx:value="5 minutes"/>
+                        <String fx:value="10 minutes"/>
+                        <String fx:value="15 minutes"/>
+                        <String fx:value="30 minutes"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Button text="Valider" onAction="#valider"/>
+        </VBox>
+    </children>
 </AnchorPane>

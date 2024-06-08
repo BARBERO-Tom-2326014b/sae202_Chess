@@ -5,16 +5,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.sae202.JouerAvecAmiController"
-            style="-fx-background-color: #49494f;"> <!-- Définir la couleur de fond -->
-    <VBox alignment="CENTER" spacing="10">
+            style="-fx-background-color: #49494f;" stylesheets="@menu.css"> <!-- Définir la couleur de fond -->
+    <VBox alignment="CENTER" spacing="10"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+          AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
         <padding>
             <Insets top="10" right="10" bottom="10" left="10"/>
         </padding>
         <Label text="Entrez le nom et prénom de joueur1"/>
-        <TextField fx:id="joueur1Nom" promptText="Nom du joueur 1"/>
+        <TextField fx:id="joueur1Nom" promptText="Nom du joueur 1" />
         <TextField fx:id="joueur1Prenom" promptText="Prénom du joueur 1"/>
         <Label text="Entrez le nom et prénom de joueur2"/>
         <TextField fx:id="joueur2Nom" promptText="Nom du joueur 2"/>
@@ -29,7 +32,6 @@
                     <String fx:value="10 minutes"/>
                     <String fx:value="15 minutes"/>
                     <String fx:value="30 minutes"/>
-
                 </FXCollections>
             </items>
         </ComboBox>
