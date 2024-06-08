@@ -1,0 +1,50 @@
+/* menu.css */
+
+/* Définir une belle police d'écriture */
+.root {
+    -fx-font-family: "Arial", sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* Centrer le contenu */
+.VBox {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-spacing: 10; /* Espacement entre les éléments */
+}
+
+/* Style pour AnchorPane */
+.anchor-pane {
+    -fx-background-color: #49494f; /* Couleur de fond */
+    -fx-padding: 20; /* Espacement autour du contenu */
+    -fx-alignment: center; /* Centrer le contenu */
+}
+
+/* Styling pour le bouton Valider */
+.button {
+    -fx-font-size: 16px;
+    -fx-background-color: #28a745; /* Couleur de fond */
+    -fx-text-fill: white; /* Couleur du texte */
+    -fx-pref-width: 100px; /* Largeur préférée */
+    -fx-pref-height: 40px; /* Hauteur préférée */
+}
+
+/* Style pour les labels */
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff; /* Couleur du texte */
+}
+
+/* Style pour les textfields */
+.text-field {
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px; /* Largeur préférée */
+    -fx-text-fill: black; /* Couleur du texte */
+}
+
+/* Style pour le ComboBox */
+.combo-box {
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px; /* Largeur préférée */
+    -fx-text-fill: black; /* Couleur du texte */
+}
