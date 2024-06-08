@@ -8,7 +8,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.sae202.JouerAvecOrdiController"
-            style="-fx-background-color: #49494f;"> <!-- Définir la couleur de fond -->
+            style="-fx-background-color: #49494f;" stylesheets="@menu.css"> <!-- Définir la couleur de fond -->
     <children>
         <VBox alignment="CENTER" spacing="10"
               AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
